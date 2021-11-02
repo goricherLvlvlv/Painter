@@ -15,7 +15,8 @@ namespace Painter.Manager
             {
                 if (_game == null)
                 {
-                    _game = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
+                    var controller = GameObject.FindGameObjectWithTag("GameController");
+                    _game = controller?.GetComponent<Game>();
                 }
                 return _game;
             }
