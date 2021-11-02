@@ -1,3 +1,4 @@
+using Painter.Setting;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,8 +10,10 @@ namespace Painter.GamePlay
     {
         #region Variable
 
-        private Stack<Dictionary<(int, int), Color>> _undoColors = new Stack<Dictionary<(int, int), Color>>();
-        private Stack<Dictionary<(int, int), Color>> _redoColors = new Stack<Dictionary<(int, int), Color>>();
+        private const int UndoMaxCount = 20;
+
+        private LinkedList<Dictionary<(int, int), Color>> _undoColors = new LinkedList<Dictionary<(int, int), Color>>();
+        private LinkedList<Dictionary<(int, int), Color>> _redoColors = new LinkedList<Dictionary<(int, int), Color>>();
 
         private Dictionary<(int, int), Color> _curChangedColors = new Dictionary<(int, int), Color>();
 
@@ -32,9 +35,12 @@ namespace Painter.GamePlay
                 return;
             }
 
-            var colors = _undoColors.Pop();
+            var colors = _undoColors.Last.Value;
+            _undoColors.RemoveLast();
+
             var result = ResetChangedColors(colors);
-            _redoColors.Push(result);
+
+            _redoColors.AddLast(result);
 
             OnUpdateUndo?.Invoke();
             OnUpdateRedo?.Invoke();
@@ -47,12 +53,20 @@ namespace Painter.GamePlay
                 return;
             }
 
-            var colors = _redoColors.Pop();
+            var colors = _redoColors.Last.Value;
+            _redoColors.RemoveLast();
+
             var result = ResetChangedColors(colors);
-            _undoColors.Push(result);
+
+            _undoColors.AddLast(result);
 
             OnUpdateUndo?.Invoke();
             OnUpdateRedo?.Invoke();
+        }
+
+        public void Clear()
+        {
+            InitCanvas(_canvas);
         }
 
         #endregion
@@ -71,10 +85,16 @@ namespace Painter.GamePlay
                 return;
             }
 
-            _undoColors.Push(_curChangedColors);
+            _undoColors.AddLast(_curChangedColors);
             _curChangedColors = new Dictionary<(int, int), Color>();
 
             _redoColors.Clear();
+
+            // Undo列表会有上限, 否则内存会炸穿
+            while (_undoColors.Count > UndoMaxCount)
+            {
+                _undoColors.RemoveFirst();
+            }
 
             OnUpdateUndo?.Invoke();
             OnUpdateRedo?.Invoke();

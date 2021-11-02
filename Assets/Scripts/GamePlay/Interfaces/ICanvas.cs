@@ -19,6 +19,7 @@ namespace Painter.GamePlay
 
         public void Redo();
 
+        public void Clear();
 
     }
 }

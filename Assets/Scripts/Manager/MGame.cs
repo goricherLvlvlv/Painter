@@ -9,7 +9,7 @@ namespace Painter.Manager
     {
         private Game _game;
 
-        public Game Current
+        public IGame Current
         {
             get 
             {

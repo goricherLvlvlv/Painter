@@ -6,16 +6,26 @@ using UnityEngine;
 
 namespace Painter.GamePlay
 {
-    public class Pen : MonoBehaviour
+    public class Pen : MonoBehaviour, IPen
     {
-        private Game _game => MGame.Fetch().Current;
+        #region Variable
 
-        public Color Color => Color.black;
+        private IGame _game => MGame.Fetch().Current;
+
+        public virtual Color Color => Color.black;
+
+        public string Path { get; set; }
+
+        #endregion
+
+        #region Override
 
         private void Update()
         {
             FollowMouse(ClampMouseInput(Input.mousePosition));
         }
+
+        #endregion
 
         #region Position
 

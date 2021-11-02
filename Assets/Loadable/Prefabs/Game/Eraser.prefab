@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 2742442706526944156}
   - component: {fileID: 2742442706526944159}
   - component: {fileID: 2742442706526944158}
-  - component: {fileID: 2742442706526944157}
+  - component: {fileID: 4091328532919426398}
   m_Layer: 5
-  m_Name: Pen
+  m_Name: Eraser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,7 +67,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fcbed5bffb342f94e8c9520c1c824d11, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b4bb390ecf95e4a4baa9090571f1b798, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -77,7 +77,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2742442706526944157
+--- !u!114 &4091328532919426398
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -86,6 +86,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 2742442706526944155}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4e6a59b33ac1264da2be690357cc881, type: 3}
+  m_Script: {fileID: 11500000, guid: de7207d97f790324689c4822a7f3387f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

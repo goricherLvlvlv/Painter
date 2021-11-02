@@ -9,25 +9,31 @@ namespace Painter.UI
 {
     public class GamePanel : MonoBehaviour
     {
-        private Game _game => MGame.Fetch().Current;
-        private GamePlay.Canvas _canvas => _game?.Canvas;
+        #region Variable
+
+        private IGame _game => MGame.Fetch().Current;
+        private ICanvas _canvas => _game?.Canvas;
 
         private GameObject _undoBtn;
         private GameObject _redoBtn;
+        private GameObject _clearBtn;
+
+        private GameObject _eraserBtn;
+        private GameObject _penBtn;
+
+        #endregion
+
+        #region Override
 
         private void Awake()
         {
-            _undoBtn = transform.Find("Undo").gameObject;
-            _redoBtn = transform.Find("Redo").gameObject;
-
-            _undoBtn.AddClickEvent(Undo);
-            _redoBtn.AddClickEvent(Redo);
-
-            _canvas.OnUpdateUndo += OnUpdateUndo;
-            _canvas.OnUpdateRedo += OnUpdateRedo;
+            InitVariable();
+            RegisterEvent();
 
             OnUpdateUndo();
             OnUpdateRedo();
+
+            OnClickPen();
         }
 
         private void OnDestroy()
@@ -38,6 +44,32 @@ namespace Painter.UI
                 _canvas.OnUpdateRedo -= OnUpdateRedo;
             }
         }
+
+        private void InitVariable()
+        {
+            _undoBtn = transform.Find("Undo").gameObject;
+            _redoBtn = transform.Find("Redo").gameObject;
+            _clearBtn = transform.Find("Clear").gameObject;
+
+            _eraserBtn = transform.Find("Eraser").gameObject;
+            _penBtn = transform.Find("Pen").gameObject;
+        }
+
+        private void RegisterEvent()
+        {
+            _undoBtn.AddClickEvent(OnClickUndo);
+            _redoBtn.AddClickEvent(OnClickRedo);
+            _clearBtn.AddClickEvent(OnClickClear);
+            _eraserBtn.AddClickEvent(OnClickEraser);
+            _penBtn.AddClickEvent(OnClickPen);
+
+            _canvas.OnUpdateUndo += OnUpdateUndo;
+            _canvas.OnUpdateRedo += OnUpdateRedo;
+        }
+
+        #endregion
+
+        #region Image Status
 
         private void SetColor(Image image, bool enable)
         {
@@ -61,16 +93,41 @@ namespace Painter.UI
             image.color = Color.black;
         }
 
-        private void Undo()
+        #endregion
+
+        #region Event
+
+        private void OnClickUndo()
         {
             _canvas.Undo();
             SetColor(_undoBtn.GetComponent<Image>(), _canvas.CanUndo);
         }
 
-        private void Redo()
+        private void OnClickRedo()
         {
             _canvas.Redo();
             SetColor(_redoBtn.GetComponent<Image>(), _canvas.CanRedo);
+        }
+
+        private void OnClickClear()
+        {
+            _canvas.Clear();
+        }
+
+        private void OnClickEraser()
+        {
+            _game.ChoosePen("Eraser.prefab");
+
+            SetColor(_penBtn.GetComponent<Image>(), true);
+            SetColor(_eraserBtn.GetComponent<Image>(), false);
+        }
+
+        private void OnClickPen()
+        {
+            _game.ChoosePen("Pen.prefab");
+
+            SetColor(_penBtn.GetComponent<Image>(), false);
+            SetColor(_eraserBtn.GetComponent<Image>(), true);
         }
 
         private void OnUpdateUndo()
@@ -82,5 +139,7 @@ namespace Painter.UI
         {
             SetColor(_redoBtn.GetComponent<Image>(), _canvas.CanRedo);
         }
+
+        #endregion
     }
 }
