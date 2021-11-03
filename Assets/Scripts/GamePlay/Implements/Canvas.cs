@@ -106,15 +106,20 @@ namespace Painter.GamePlay
         // 绘制一个点
         private void DrawPoint(int x, int y, Color color)
         {
-            DrawPixel(x - 1, y - 1, color);
-            DrawPixel(x, y - 1, color);
-            DrawPixel(x + 1, y - 1, color);
-            DrawPixel(x - 1, y, color);
-            DrawPixel(x, y, color);
-            DrawPixel(x + 1, y, color);
-            DrawPixel(x - 1, y + 1, color);
-            DrawPixel(x, y + 1, color);
-            DrawPixel(x + 1, y + 1, color);
+            var blocks = SPen.Fetch("Pen").Blocks11;
+            int level = 11;
+
+            for (int i = 0; i < blocks.Length; ++i)
+            {
+                if (!blocks[i])
+                {
+                    continue;
+                }
+
+                int yOffset = i / level - level / 2;
+                int xOffset = i % level - level / 2;
+                DrawPixel(x + xOffset, y + yOffset, color);
+            }
         }
 
         // 绘制一条线, 横线

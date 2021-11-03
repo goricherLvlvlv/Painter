@@ -1,5 +1,6 @@
 Painter.sln
 Assembly-CSharp.csproj
+Assembly-CSharp-Editor.csproj
 .vsconfig
 UnityEngine.UI.csproj
 UnityEngine.TestRunner.csproj
