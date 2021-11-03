@@ -66,7 +66,7 @@ namespace Painter.GamePlay
 
         public void Clear()
         {
-            InitCanvas(_canvas);
+            FillWhiteTexture(_canvas);
         }
 
         #endregion

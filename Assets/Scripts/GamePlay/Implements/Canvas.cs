@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using Painter.UI;
 using UnityEngine.EventSystems;
 using Painter.Manager;
+using System.Diagnostics;
+using System;
 
 namespace Painter.GamePlay
 {
@@ -19,6 +21,8 @@ namespace Painter.GamePlay
 
         private Vector2? _lastPos = null;
 
+        private static Color[] whiteColor;
+
         #endregion
 
         #region Override
@@ -28,7 +32,7 @@ namespace Painter.GamePlay
             _image = GetComponent<Image>();
 
             _canvas = new Texture2D((int)SGame.Fetch().UIResolution.x, (int)SGame.Fetch().UIResolution.y);
-            InitCanvas(_canvas);
+            FillWhiteTexture(_canvas);
             Sprite sp = Sprite.Create(_canvas, new Rect(0f, 0f, 1920f, 1080f), new Vector2(0.5f, 0.5f));
             _image.sprite = sp;
 
@@ -36,18 +40,6 @@ namespace Painter.GamePlay
             gameObject.AddBeginDragEvent(OnBeginDragEvent);
             gameObject.AddDragEvent(OnDragEvent);
             gameObject.AddEndDragEvent(OnDragEndEvent);
-        }
-
-        private void InitCanvas(Texture2D tex)
-        {
-            for (int row = 0; row < tex.width; ++row)
-            {
-                for (int col = 0; col < tex.height; ++col)
-                {
-                    tex.SetPixel(row, col, Color.white);
-                }
-            }
-            tex.Apply();
         }
 
         #endregion
@@ -73,6 +65,18 @@ namespace Painter.GamePlay
         #endregion
 
         #region Tool
+
+        private static void FillWhiteTexture(Texture2D texture)
+        {
+            if (whiteColor == null)
+            {
+                whiteColor = new Color[(int)SGame.Fetch().UIResolution.x * (int)SGame.Fetch().UIResolution.y];
+                Array.Fill(whiteColor, Color.white);
+            }
+
+            texture.SetPixels(0, 0, texture.width, texture.height, whiteColor);
+            texture.Apply();
+        }
 
         private Vector2 ClampMouseInput(Vector2 position)
         {
