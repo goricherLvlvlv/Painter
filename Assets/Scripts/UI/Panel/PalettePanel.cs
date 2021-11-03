@@ -70,11 +70,11 @@ namespace Painter.UI
         private Color CalculateColor()
         {
             var hueColor = (Color)_palette.GetColor32((int)_hue.value);
-            var valueColor = _value.value * Color.white;
+            var saturationColor = Color.Lerp(Color.white, hueColor, _saturation.value);
+            var valueColor = Color.Lerp(Color.black, saturationColor, _value.value);
             valueColor.a = 1f;
-            var saturationColor = Color.Lerp(valueColor, hueColor, _saturation.value);
 
-            _color = saturationColor;
+            _color = valueColor;
             _result.color = _color;
 
             return _color;
