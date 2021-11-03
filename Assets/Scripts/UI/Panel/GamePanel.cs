@@ -7,11 +7,10 @@ using UnityEngine.UI;
 
 namespace Painter.UI
 {
-    public class GamePanel : MonoBehaviour
+    public class GamePanel : BasePanel
     {
         #region Variable
 
-        private IGame _game => MGame.Fetch().Current;
         private ICanvas _canvas => _game?.Canvas;
 
         private GameObject _undoBtn;
@@ -25,9 +24,10 @@ namespace Painter.UI
 
         #region Override
 
-        private void Awake()
+        protected override void Awake()
         {
-            InitVariable();
+            base.Awake();
+
             RegisterEvent();
 
             OnUpdateUndo();
@@ -45,8 +45,10 @@ namespace Painter.UI
             }
         }
 
-        private void InitVariable()
+        protected override void InitComponent()
         {
+            base.InitComponent();
+
             _undoBtn = transform.Find("Undo").gameObject;
             _redoBtn = transform.Find("Redo").gameObject;
             _clearBtn = transform.Find("Clear").gameObject;
