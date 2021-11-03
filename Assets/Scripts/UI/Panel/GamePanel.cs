@@ -20,6 +20,8 @@ namespace Painter.UI
         private GameObject _eraserBtn;
         private GameObject _penBtn;
 
+        private GameObject _paletteBtn;
+
         #endregion
 
         #region Override
@@ -55,6 +57,8 @@ namespace Painter.UI
 
             _eraserBtn = transform.Find("Eraser").gameObject;
             _penBtn = transform.Find("Pen").gameObject;
+
+            _paletteBtn = transform.Find("Palette").gameObject;
         }
 
         private void RegisterEvent()
@@ -64,6 +68,7 @@ namespace Painter.UI
             _clearBtn.AddClickEvent(OnClickClear);
             _eraserBtn.AddClickEvent(OnClickEraser);
             _penBtn.AddClickEvent(OnClickPen);
+            _paletteBtn.AddClickEvent(OnClickPalette);
 
             _canvas.OnUpdateUndo += OnUpdateUndo;
             _canvas.OnUpdateRedo += OnUpdateRedo;
@@ -130,6 +135,11 @@ namespace Painter.UI
 
             SetColor(_penBtn.GetComponent<Image>(), false);
             SetColor(_eraserBtn.GetComponent<Image>(), true);
+        }
+
+        private void OnClickPalette()
+        {
+            _game.Root.LoadPrefabAtUILayer("PalettePanel.prefab");
         }
 
         private void OnUpdateUndo()

@@ -19,5 +19,10 @@ namespace Painter.UI
         {
 
         }
+
+        protected void CloseSelf()
+        {
+            Destroy(gameObject);
+        }
     }
 }
