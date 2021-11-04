@@ -25,7 +25,7 @@ namespace Painter.GamePlay
 
         public GameObject LoadPrefabAtUILayer(string name)
         {
-            return LoadPrefab($"{UIResourcePath}{name}", _gameLayer);
+            return LoadPrefab($"{UIResourcePath}{name}", _uiLayer);
         }
 
         private GameObject LoadPrefab(string path, GameObject parent)
