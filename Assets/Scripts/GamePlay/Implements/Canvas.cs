@@ -93,7 +93,9 @@ namespace Painter.GamePlay
         private void DrawPixel(int x, int y, Color color)
         {
             var oldColor = _canvas.GetPixel(x, y);
-            if (oldColor == color)
+            if (Mathf.Abs(oldColor.r - color.r) < 0.019 
+                && Mathf.Abs(oldColor.g - color.g) < 0.019 
+                && Mathf.Abs(oldColor.b - color.b) < 0.019)
             {
                 return;
             }
@@ -106,8 +108,7 @@ namespace Painter.GamePlay
         // 绘制一个点
         private void DrawPoint(int x, int y, Color color)
         {
-            var blocks = SPen.Fetch("Pen").Blocks11;
-            int level = 11;
+            var (blocks, level) = SPen.Fetch(_game.Pen.Name).GetBlocks(_game.DrawLevel);
 
             for (int i = 0; i < blocks.Length; ++i)
             {
@@ -227,12 +228,12 @@ namespace Painter.GamePlay
         {
             if (_lastPos == null || _lastPos == pos)
             {
-                DrawPoint((int)pos.x, (int)pos.y, _game.Pen.Color);
+                DrawPoint((int)pos.x, (int)pos.y, _game.Pen.DrawColor);
                 _canvas.Apply();
             }
             else
             {
-                DrawLine(_lastPos.Value, pos, _game.Pen.Color);
+                DrawLine(_lastPos.Value, pos, _game.Pen.DrawColor);
                 _canvas.Apply();
             }
 

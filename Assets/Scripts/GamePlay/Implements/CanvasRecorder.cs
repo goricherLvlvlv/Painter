@@ -67,6 +67,12 @@ namespace Painter.GamePlay
         public void Clear()
         {
             FillWhiteTexture(_canvas);
+
+            _redoColors.Clear();
+            OnUpdateRedo?.Invoke();
+
+            _undoColors.Clear();
+            OnUpdateUndo?.Invoke();
         }
 
         #endregion

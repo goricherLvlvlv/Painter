@@ -6,6 +6,8 @@ namespace Painter.GamePlay
 {
     public class Eraser : Pen
     {
-        public override Color Color => Color.white;
+        public override PenType Type => PenType.Eraser;
+
+        public override Color DrawColor => Color.white;
     }
 }

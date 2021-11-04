@@ -8,21 +8,29 @@ namespace Painter.UI
 {
     public abstract class BasePanel : MonoBehaviour
     {
-        protected IGame _game => MGame.Fetch().Current;
+        protected static IGame _game => MGame.Fetch().Current;
 
-        protected virtual void Awake()
+        protected static IRoot _root => _game?.Root;
+
+        public static void Open<PanelType, ArgType>(ArgType arg) where PanelType : BasePanel where ArgType : UIArg
         {
-            InitComponent();
+            var go = _root?.LoadPrefabAtUILayer(typeof(PanelType).Name + ".prefab");
+            if (go != null)
+            {
+                var panel = go.GetComponent<PanelType>();
+                panel.Init<ArgType>(arg);
+            }
         }
 
-        protected virtual void InitComponent()
-        {
-
-        }
-
-        protected void CloseSelf()
+        protected void Close()
         {
             Destroy(gameObject);
         }
+
+        protected virtual void Init<ArgType>(ArgType arg) where ArgType : UIArg
+        {
+
+        }
+
     }
 }

@@ -8,7 +8,7 @@ namespace Painter.UI
     public class PalettePanel : BasePanel
     {
         private GameObject _mask;
-        private CircleImage _palette;
+        private PalleteImage _palette;
         private Image _float;
         private Slider _hue;
         private Slider _saturation;
@@ -16,23 +16,54 @@ namespace Painter.UI
         private Image _result;
 
         private Color _color = Color.white;
-
-        protected override void Awake()
+        public Color Color
         {
-            base.Awake();
+            get => _color;
+            set
+            {
+                _color = value;
+                _game.Pen.Color = _color;
+            }
+        }
 
+        protected override void Init<ArgType>(ArgType arg)
+        {
+            base.Init(arg);
+
+            if (arg is PalettePanelArg colorArg)
+            {
+                _color = colorArg.color;
+            }
+
+            InitComponent();
+            RGB2HSV(_color);
             RegisterEvent();
 
             CalculateColor();
             CalculateLocalPosition();
         }
 
-        protected override void InitComponent()
+        private void RGB2HSV(Color color)
         {
-            base.InitComponent();
+            var hue = _palette.GetHue(color);
+            _hue.value = hue;
 
+            float max = Mathf.Max(color.r, color.g, color.b);
+            float min = Mathf.Min(color.r, color.g, color.b);
+
+            var saturation = max == 0 ? max : 1f - min / max;
+            _saturation.value = saturation;
+
+            var value = max;
+            _value.value = value;
+
+            _palette.SetValueColor(value);
+        }
+
+        private void InitComponent()
+        {
             _mask = transform.Find("Mask").gameObject;
-            _palette = transform.Find("Palette").GetComponent<CircleImage>();
+            _palette = transform.Find("Palette").GetComponent<PalleteImage>();
             _float = transform.Find("Palette/Float").GetComponent<Image>();
             _hue = transform.Find("HueSlider").GetComponent<Slider>();
             _saturation = transform.Find("SaturationSlider").GetComponent<Slider>();
@@ -42,7 +73,7 @@ namespace Painter.UI
 
         private void RegisterEvent()
         {
-            _mask.AddClickEvent(CloseSelf);
+            _mask.AddClickEvent(Close);
             _hue.onValueChanged.AddListener(OnHueChanged);
             _saturation.onValueChanged.AddListener(OnSaturationChanged);
             _value.onValueChanged.AddListener(OnValueChanged);
@@ -74,10 +105,10 @@ namespace Painter.UI
             var valueColor = Color.Lerp(Color.black, saturationColor, _value.value);
             valueColor.a = 1f;
 
-            _color = valueColor;
-            _result.color = _color;
+            Color = valueColor;
+            _result.color = Color;
 
-            return _color;
+            return Color;
         }
 
         private void CalculateLocalPosition()

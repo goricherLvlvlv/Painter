@@ -30,5 +30,24 @@ namespace Painter.Setting
         public bool[] Blocks9 => _9x9blocks;
 
         public bool[] Blocks11 => _11x11blocks;
+
+        public (bool[], int) GetBlocks(int level)
+        {
+            switch (level)
+            {
+                case 1:
+                    return (Blocks3, 3);
+                case 2:
+                    return (Blocks5, 5);
+                case 3:
+                    return (Blocks7, 7);
+                case 4:
+                    return (Blocks9, 9);
+                case 5:
+                    return (Blocks11, 11);
+                default:
+                    return (Blocks3, 3);
+            }
+        }
     }
 }

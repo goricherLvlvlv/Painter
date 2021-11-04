@@ -18,25 +18,18 @@ namespace Painter.UI
         private GameObject _clearBtn;
 
         private GameObject _eraserBtn;
+        private Text _eraserLevel;
+        private Slider _eraserSlider;
+
         private GameObject _penBtn;
+        private Text _penLevel;
+        private Slider _penSlider;
 
         private GameObject _paletteBtn;
 
         #endregion
 
         #region Override
-
-        protected override void Awake()
-        {
-            base.Awake();
-
-            RegisterEvent();
-
-            OnUpdateUndo();
-            OnUpdateRedo();
-
-            OnClickPen();
-        }
 
         private void OnDestroy()
         {
@@ -47,16 +40,32 @@ namespace Painter.UI
             }
         }
 
-        protected override void InitComponent()
+        protected override void Init<ArgType>(ArgType arg)
         {
-            base.InitComponent();
+            base.Init(arg);
 
+            InitComponent();
+            RegisterEvent();
+
+            OnUpdateUndo();
+            OnUpdateRedo();
+
+            OnClickPen();
+        }
+
+        private void InitComponent()
+        {
             _undoBtn = transform.Find("Undo").gameObject;
             _redoBtn = transform.Find("Redo").gameObject;
             _clearBtn = transform.Find("Clear").gameObject;
 
             _eraserBtn = transform.Find("Eraser").gameObject;
+            _eraserLevel = _eraserBtn.transform.Find("Level/Text").GetComponent<Text>();
+            _eraserSlider = _eraserBtn.transform.Find("Slider").GetComponent<Slider>();
+
             _penBtn = transform.Find("Pen").gameObject;
+            _penLevel = _penBtn.transform.Find("Level/Text").GetComponent<Text>();
+            _penSlider = _penBtn.transform.Find("Slider").GetComponent<Slider>();
 
             _paletteBtn = transform.Find("Palette").gameObject;
         }
@@ -69,6 +78,9 @@ namespace Painter.UI
             _eraserBtn.AddClickEvent(OnClickEraser);
             _penBtn.AddClickEvent(OnClickPen);
             _paletteBtn.AddClickEvent(OnClickPalette);
+
+            _penSlider.onValueChanged.AddListener(OnPenLevelChanged);
+            _eraserSlider.onValueChanged.AddListener(OnEraserLevelChanged);
 
             _canvas.OnUpdateUndo += OnUpdateUndo;
             _canvas.OnUpdateRedo += OnUpdateRedo;
@@ -123,7 +135,7 @@ namespace Painter.UI
 
         private void OnClickEraser()
         {
-            _game.ChoosePen("Eraser.prefab");
+            _game.ChoosePen("Eraser");
 
             SetColor(_penBtn.GetComponent<Image>(), true);
             SetColor(_eraserBtn.GetComponent<Image>(), false);
@@ -131,7 +143,7 @@ namespace Painter.UI
 
         private void OnClickPen()
         {
-            _game.ChoosePen("Pen.prefab");
+            _game.ChoosePen("Pen");
 
             SetColor(_penBtn.GetComponent<Image>(), false);
             SetColor(_eraserBtn.GetComponent<Image>(), true);
@@ -139,7 +151,19 @@ namespace Painter.UI
 
         private void OnClickPalette()
         {
-            _game.Root.LoadPrefabAtUILayer("PalettePanel.prefab");
+            BasePanel.Open<PalettePanel, PalettePanelArg>(new PalettePanelArg() { color = _game.Pen.Color });
+        }
+
+        private void OnPenLevelChanged(float val)
+        {
+            _penLevel.text = ((int)val).ToString();
+            _game.PenLevel = (int)val;
+        }
+
+        private void OnEraserLevelChanged(float val)
+        {
+            _eraserLevel.text = ((int)val).ToString();
+            _game.EraserLevel = (int)val;
         }
 
         private void OnUpdateUndo()

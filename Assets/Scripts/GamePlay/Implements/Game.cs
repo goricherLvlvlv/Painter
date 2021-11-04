@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Painter.Manager;
 using Painter.Setting;
+using Painter.UI;
 using UnityEngine;
 
 namespace Painter.GamePlay
@@ -21,6 +22,10 @@ namespace Painter.GamePlay
         public ICanvas Canvas => _canvas;
         public IPen Pen => _pen;
 
+        public int PenLevel { get; set; } = 1;
+        public int EraserLevel { get; set; } = 1;
+        public int DrawLevel => Pen.Type == PenType.Pen ? PenLevel : EraserLevel;
+
         #endregion
 
         #region Override
@@ -29,7 +34,7 @@ namespace Painter.GamePlay
         {
             _canvas = Root.LoadPrefabAtGameLayer("Canvas.prefab").GetComponent<Canvas>();
 
-            Root.LoadPrefabAtUILayer("GamePanel.prefab");
+            BasePanel.Open<GamePanel, NullArg>(null);
         }
 
         #endregion
@@ -38,19 +43,22 @@ namespace Painter.GamePlay
 
         public void ChooseEraser()
         {
-            ChoosePen("Eraser.prefab");
+            ChoosePen("Eraser");
         }
 
-        public void ChoosePen(string path)
+        public void ChoosePen(string name)
         {
+            Color oldColor = Color.black;
             if (_pen != null)
             {
+                oldColor = _pen.Color;
                 Destroy(_pen.gameObject);
                 _pen = null;
             }
 
-            _pen = Root.LoadPrefabAtGameLayer(path).GetComponent<Pen>();
-            _pen.Path = path;
+            _pen = Root.LoadPrefabAtGameLayer(name + ".prefab").GetComponent<Pen>();
+            _pen.Color = oldColor;
+            _pen.Name = name;
         }
         #endregion
     }

@@ -9,12 +9,15 @@ namespace Painter.GamePlay
     public class Pen : MonoBehaviour, IPen
     {
         #region Variable
+        public virtual PenType Type => PenType.Pen;
 
-        private IGame _game => MGame.Fetch().Current;
+        protected IGame _game => MGame.Fetch().Current;
 
-        public virtual Color Color => Color.black;
+        public virtual Color Color { get; set; }
 
-        public string Path { get; set; }
+        public virtual Color DrawColor => Color;
+
+        public string Name { get; set; }
 
         #endregion
 
